@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using CluedIn.Core;
 using CluedIn.Core.Logging;
 using CluedIn.Core.Providers;
@@ -85,6 +86,7 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
             var signature = System.Convert.ToBase64String(System.Security.Cryptography.HMACMD5.Create().ComputeHash(apiBytes));
             var url = string.Format(api, projectNumber, accessKey, expires);
             url = string.Format("{0}&Signature={1}", url, signature);
+            url = HttpUtility.UrlEncode(url);
             using (HttpClient httpClient = new HttpClient())
             {
 
