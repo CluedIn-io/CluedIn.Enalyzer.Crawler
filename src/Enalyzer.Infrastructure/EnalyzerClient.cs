@@ -80,8 +80,8 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
             var projectNumber = 12345;
             var apiSecret = "something";
             var api = string.Format("https://api.enalyzer.com/projects/{0}/statistics?AccessKey={1}&Expires={2}", projectNumber, accessKey, expires);
-            var apiBytes = System.Text.Encoding.UTF8.GetBytes(api);
-            apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(apiSecret));
+            var apiBytes = System.Text.Encoding.UTF8.GetBytes(apiSecret);
+            apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(api));
             var signature = System.Convert.ToBase64String(System.Security.Cryptography.HMACMD5.Create().ComputeHash(apiBytes));
             var url = string.Format(api, projectNumber, accessKey, expires);
             url = string.Format("{0}&Signature={1}", url, signature);
