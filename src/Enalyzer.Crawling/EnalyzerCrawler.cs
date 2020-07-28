@@ -24,6 +24,10 @@ namespace CluedIn.Crawling.Enalyzer
             var client = clientFactory.CreateNew(enalyzercrawlJobData);
 
             //retrieve data from provider and yield objects
+            foreach (var item in client.Get(enalyzercrawlJobData.AccessKey, enalyzercrawlJobData.ApiSecret))
+            {
+                yield return item;
+            }
             
         }       
     }

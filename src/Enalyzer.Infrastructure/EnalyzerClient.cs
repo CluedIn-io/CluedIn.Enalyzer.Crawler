@@ -73,13 +73,10 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
             return new AccountInformation("", "");
         }
 
-        public IEnumerable<Project> Get()
+        public IEnumerable<Project> Get(string accessKey, string apiSecret)
         {
             //Gets current unix time
             var expires = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            //TODO: Replace with actual access key and project numbers
-            var accessKey = "ashdkj";
-            var apiSecret = "something";
             var api = string.Format("https://api.enalyzer.com/projects?AccessKey={0}&Expires={1}", accessKey, expires);
             var apiBytes = System.Text.Encoding.UTF8.GetBytes(apiSecret);
             apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(api));
