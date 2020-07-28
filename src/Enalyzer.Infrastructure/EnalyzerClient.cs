@@ -9,6 +9,7 @@ using CluedIn.Core;
 using CluedIn.Core.Logging;
 using CluedIn.Core.Providers;
 using CluedIn.Crawling.Enalyzer.Core;
+using CluedIn.Crawling.Enalyzer.Core.Models;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -72,33 +73,37 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
             return new AccountInformation("", "");
         }
 
-        public IEnumerable<T> Get<T>()
+        public IEnumerable<Project> Get()
         {
             //Gets current unix time
             var expires = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             //TODO: Replace with actual access key and project numbers
             var accessKey = "ashdkj";
-            var projectNumber = 12345;
             var apiSecret = "something";
-            var api = string.Format("https://api.enalyzer.com/projects/{0}/statistics?AccessKey={1}&Expires={2}", projectNumber, accessKey, expires);
+            var api = string.Format("https://api.enalyzer.com/projects?AccessKey={0}&Expires={1}", accessKey, expires);
             var apiBytes = System.Text.Encoding.UTF8.GetBytes(apiSecret);
             apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(api));
             var signature = System.Convert.ToBase64String(System.Security.Cryptography.HMACMD5.Create().ComputeHash(apiBytes));
-            var url = string.Format(api, projectNumber, accessKey, expires);
+            var url = string.Format(api, accessKey, expires);
             url = string.Format("{0}&Signature={1}", url, signature);
             url = HttpUtility.UrlEncode(url);
             using (HttpClient httpClient = new HttpClient())
             {
 
                 var response = httpClient.GetAsync(url).Result;
-                var responseContent = response.Content.ReadAsStringAsync();
+                var responseContent = response.Content.ReadAsStringAsync().Result;
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-
+                    log.Error("401 Unauthorized. Check credentials");
                 }
                 else if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    //TODO: log error
+                    log.Error(response.StatusCode.ToString() + " Failed to get data");
+                }
+                var results = JsonConvert.DeserializeObject<Projects>(responseContent);
+                foreach (var item in results.projects)
+                {
+                    yield return item;
                 }
             }
         }
