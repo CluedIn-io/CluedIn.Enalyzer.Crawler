@@ -76,14 +76,7 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
         public IEnumerable<Project> Get(string accessKey, string apiSecret)
         {
             //Gets current unix time
-            var expires = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            var api = string.Format("https://api.enalyzer.com/projects?AccessKey={0}&Expires={1}", accessKey, expires);
-            var apiBytes = System.Text.Encoding.UTF8.GetBytes(apiSecret);
-            apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(api));
-            var signature = System.Convert.ToBase64String(System.Security.Cryptography.HMACMD5.Create().ComputeHash(apiBytes));
-            var url = string.Format(api, accessKey, expires);
-            url = string.Format("{0}&Signature={1}", url, signature);
-            url = HttpUtility.UrlEncode(url);
+            var url = CreateUrl(accessKey, apiSecret);
             using (HttpClient httpClient = new HttpClient())
             {
 
@@ -103,6 +96,19 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
                     yield return item;
                 }
             }
+        }
+
+        private static string CreateUrl(string accessKey, string apiSecret)
+        {
+            var expires = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var api = string.Format("https://api.enalyzer.com/projects?AccessKey={0}&Expires={1}", accessKey, expires);
+            var apiBytes = System.Text.Encoding.UTF8.GetBytes(apiSecret);
+            apiBytes.AddRange(System.Text.Encoding.UTF8.GetBytes(api));
+            var signature = System.Convert.ToBase64String(System.Security.Cryptography.HMACMD5.Create().ComputeHash(apiBytes));
+            var url = string.Format(api, accessKey, expires);
+            url = string.Format("{0}&Signature={1}", url, signature);
+            url = HttpUtility.UrlEncode(url);
+            return url;
         }
     }
 }
