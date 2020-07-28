@@ -10,6 +10,8 @@ namespace CluedIn.Crawling.Enalyzer.Core
         public struct KeyName
         {
             public const string ApiKey = nameof(ApiKey);
+            public const string AccessKey = nameof(AccessKey);
+            public const string ApiSecret = nameof(ApiSecret);
         }
 
         // TODO Complete the following section

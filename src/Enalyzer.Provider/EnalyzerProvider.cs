@@ -40,6 +40,10 @@ namespace CluedIn.Provider.Enalyzer
             var enalyzerCrawlJobData = new EnalyzerCrawlJobData();
             if (configuration.ContainsKey(EnalyzerConstants.KeyName.ApiKey))
             { enalyzerCrawlJobData.ApiKey = configuration[EnalyzerConstants.KeyName.ApiKey].ToString(); }
+            if (configuration.ContainsKey(EnalyzerConstants.KeyName.AccessKey))
+            { enalyzerCrawlJobData.AccessKey = configuration[EnalyzerConstants.KeyName.AccessKey].ToString(); }
+            if (configuration.ContainsKey(EnalyzerConstants.KeyName.ApiSecret))
+            { enalyzerCrawlJobData.ApiSecret = configuration[EnalyzerConstants.KeyName.ApiSecret].ToString(); }
 
             return await Task.FromResult(enalyzerCrawlJobData);
         }
