@@ -3,7 +3,7 @@ using System.Linq;
 using AutoFixture.Xunit2;
 using CluedIn.Core.Crawling;
 using CluedIn.Crawling.Enalyzer.Core;
-using Should;
+using Shouldly;
 using Xunit;
 
 namespace CluedIn.Provider.Enalyzer.Unit.Test.EnalyzerProvider
@@ -26,7 +26,7 @@ namespace CluedIn.Provider.Enalyzer.Unit.Test.EnalyzerProvider
 
             ((ArgumentNullException)ex.InnerExceptions.Single())
                 .ParamName
-                .ShouldEqual("jobData");
+                .ShouldBe("jobData");
         }
 
         [Theory]
@@ -59,7 +59,7 @@ namespace CluedIn.Provider.Enalyzer.Unit.Test.EnalyzerProvider
                     $"{key} not found in results");
 
             result[key]
-                .ShouldEqual(expectedValue);
+                .ShouldBe(expectedValue);
         }
     }
 }

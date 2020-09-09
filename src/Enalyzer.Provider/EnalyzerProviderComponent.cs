@@ -2,6 +2,7 @@ using Castle.MicroKernel.Registration;
 
 using CluedIn.Core;
 using CluedIn.Core.Providers;
+using CluedIn.Core.Server;
 // 
 using CluedIn.Crawling.Enalyzer.Core;
 using CluedIn.Crawling.Enalyzer.Infrastructure.Installers;
@@ -12,7 +13,7 @@ using ComponentHost;
 namespace CluedIn.Provider.Enalyzer
 {
     [Component(EnalyzerConstants.ProviderName, "Providers", ComponentType.Service, ServerComponents.ProviderWebApi, Components.Server, Components.DataStores, Isolation = ComponentIsolation.NotIsolated)]
-    public sealed class EnalyzerProviderComponent : ServiceApplicationComponent<EmbeddedServer>
+    public sealed class EnalyzerProviderComponent : ServiceApplicationComponent<IBusServer>
     {
         public EnalyzerProviderComponent(ComponentInfo componentInfo)
             : base(componentInfo)
@@ -26,8 +27,8 @@ namespace CluedIn.Provider.Enalyzer
         {
             Container.Install(new InstallComponents());
 
-            Container.Register(Types.FromThisAssembly().BasedOn<IProvider>().WithServiceFromInterface().If(t => !t.IsAbstract).LifestyleSingleton());
-            Container.Register(Types.FromThisAssembly().BasedOn<IEntityActionBuilder>().WithServiceFromInterface().If(t => !t.IsAbstract).LifestyleSingleton());
+            Container.Register(Types.FromAssembly(System.Reflection.Assembly.GetExecutingAssembly()).BasedOn<IProvider>().WithServiceFromInterface().If(t => !t.IsAbstract).LifestyleSingleton());
+            Container.Register(Types.FromAssembly(System.Reflection.Assembly.GetExecutingAssembly()).BasedOn<IEntityActionBuilder>().WithServiceFromInterface().If(t => !t.IsAbstract).LifestyleSingleton());
 
 
 

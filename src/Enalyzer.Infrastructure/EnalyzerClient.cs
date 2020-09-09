@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -24,11 +25,11 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
     {
         private const string BaseUri = "http://sample.com";
 
-        private readonly ILogger log;
+        private readonly ILogger<EnalyzerClient> log;
 
         private readonly IRestClient client;
 
-        public EnalyzerClient(ILogger log, EnalyzerCrawlJobData enalyzerCrawlJobData, IRestClient client) // TODO: pass on any extra dependencies
+        public EnalyzerClient(ILogger<EnalyzerClient> log, EnalyzerCrawlJobData enalyzerCrawlJobData, IRestClient client) // TODO: pass on any extra dependencies
         {
             if (enalyzerCrawlJobData == null)
             {
@@ -57,7 +58,7 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 var diagnosticMessage = $"Request to {client.BaseUrl}{url} failed, response {response.ErrorMessage} ({response.StatusCode})";
-                log.Error(() => diagnosticMessage);
+                log.LogError(diagnosticMessage);
                 throw new InvalidOperationException($"Communication to jsonplaceholder unavailable. {diagnosticMessage}");
             }
 
@@ -84,11 +85,11 @@ namespace CluedIn.Crawling.Enalyzer.Infrastructure
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    log.Error("401 Unauthorized. Check credentials");
+                    log.LogError("401 Unauthorized. Check credentials");
                 }
                 else if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    log.Error(response.StatusCode.ToString() + " Failed to get data");
+                    log.LogError(response.StatusCode.ToString() + " Failed to get data");
                 }
                 var results = JsonConvert.DeserializeObject<Projects>(responseContent);
                 foreach (var item in results.projects)
